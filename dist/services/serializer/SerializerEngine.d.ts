@@ -12,6 +12,5 @@ export declare class SerializerEngine {
     deserializeFromString<T extends SerializableType>(obj: string): T;
     serialise(obj: GenericSerializable): GenericSerialisationData;
     deserialize<T extends SerializableType>(data: GenericSerialisationData): T;
-    getType(): string;
 }
 //# sourceMappingURL=SerializerEngine.d.ts.map

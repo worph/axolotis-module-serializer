@@ -1,1 +1,1 @@
-export const SerializerId = Symbol.for("Serializer");
+export const SerializerEngineName = Symbol.for("SerializerEngineName");

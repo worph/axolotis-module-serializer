@@ -1,2 +1,2 @@
-export declare const SerializerId: unique symbol;
+export declare const SerializerEngineName: unique symbol;
 //# sourceMappingURL=Identifier.d.ts.map

@@ -45,8 +45,4 @@ export class SerializerEngine {
         return seri.deserialize(data, this.reviver);
     }
 
-    getType(): string {
-        return SerializerEngine.name;
-    }
-
 }

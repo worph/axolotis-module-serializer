@@ -4424,7 +4424,7 @@ var src_exports = {};
 __export(src_exports, {
   AxSerializerModule: () => AxSerializerModule,
   SerializerEngine: () => SerializerEngine,
-  SerializerId: () => SerializerId
+  SerializerEngineName: () => SerializerEngineName
 });
 module.exports = __toCommonJS(src_exports);
 var import_inversify = __toESM(require_inversify(), 1);
@@ -4545,22 +4545,16 @@ var SerializerEngine = class {
     }
     return seri.deserialize(data, this.reviver);
   }
-  getType() {
-    return SerializerEngine.name;
-  }
 };
 
 // src/Identifier.ts
-var SerializerId = Symbol.for("Serializer");
+var SerializerEngineName = Symbol.for("SerializerEngineName");
 
 // src/index.ts
 var AxSerializerModule = class {
   getModule() {
     return new import_inversify.ContainerModule((bind) => {
-      bind(SerializerEngine.name).toDynamicValue(() => {
-        return new SerializerEngine();
-      }).inSingletonScope();
-      bind(SerializerId).toDynamicValue(() => {
+      bind(SerializerEngineName).toDynamicValue(() => {
         return new SerializerEngine();
       }).inSingletonScope();
     });
@@ -4570,6 +4564,6 @@ var AxSerializerModule = class {
 0 && (module.exports = {
   AxSerializerModule,
   SerializerEngine,
-  SerializerId
+  SerializerEngineName
 });
 //# sourceMappingURL=index.cjs.map
