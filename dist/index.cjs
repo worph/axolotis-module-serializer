@@ -4422,7 +4422,7 @@ var require_inversify = __commonJS({
 // src/index.ts
 var src_exports = {};
 __export(src_exports, {
-  AxBasicModule: () => AxBasicModule,
+  AxSerializerModule: () => AxSerializerModule,
   SerializerEngine: () => SerializerEngine,
   SerializerId: () => SerializerId
 });
@@ -4554,7 +4554,7 @@ var SerializerEngine = class {
 var SerializerId = Symbol.for("Serializer");
 
 // src/index.ts
-var AxBasicModule = class {
+var AxSerializerModule = class {
   getModule() {
     return new import_inversify.ContainerModule((bind) => {
       bind(SerializerEngine.name).toDynamicValue(() => {
@@ -4568,7 +4568,7 @@ var AxBasicModule = class {
 };
 // Annotate the CommonJS export names for ESM import in node:
 0 && (module.exports = {
-  AxBasicModule,
+  AxSerializerModule,
   SerializerEngine,
   SerializerId
 });

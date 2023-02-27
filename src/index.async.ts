@@ -4,7 +4,7 @@ import {SerializerEngine} from "./services/serializer/SerializerEngine";
 import {SerializerId} from "./Identifier";
 export * from "./Identifier";
 
-export class AxBasicModule implements AxModuleAsync{
+export class AxSerializerModule implements AxModuleAsync{
     getModule(): AsyncContainerModule {
         return new AsyncContainerModule(async (bind: interfaces.Bind) => {
             bind(SerializerId).toDynamicValue(async () => {

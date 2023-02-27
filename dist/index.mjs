@@ -4542,7 +4542,7 @@ var SerializerEngine = class {
 var SerializerId = Symbol.for("Serializer");
 
 // src/index.ts
-var AxBasicModule = class {
+var AxSerializerModule = class {
   getModule() {
     return new import_inversify.ContainerModule((bind) => {
       bind(SerializerEngine.name).toDynamicValue(() => {
@@ -4555,7 +4555,7 @@ var AxBasicModule = class {
   }
 };
 export {
-  AxBasicModule,
+  AxSerializerModule,
   SerializerEngine,
   SerializerId
 };

@@ -8,7 +8,7 @@ export * from "./services/serializer/Serializer";
 
 export * from "./Identifier";
 
-export class AxBasicModule implements AxModule{
+export class AxSerializerModule implements AxModule{
     getModule(): ContainerModule {
         return new ContainerModule((bind: interfaces.Bind) => {
             bind(SerializerEngine.name).toDynamicValue(() => {
