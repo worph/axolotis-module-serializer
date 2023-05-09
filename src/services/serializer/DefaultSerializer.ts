@@ -4,6 +4,9 @@ import {
     Serializer
 } from "./Serializer";
 
+/**
+ * The aims of this serializer is to be able to serialize any primitive type and any object
+ */
 export class DefaultSerializer implements Serializer<any> {
     specialListException = [
         ArrayBuffer,
@@ -24,8 +27,12 @@ export class DefaultSerializer implements Serializer<any> {
         ///////////////////////////
         //Basic Expression check
         ///////////////////////////
-        if (data === undefined) return undefined;
-        if (data === null) return null;
+        if (data === undefined) {
+            return undefined;
+        }
+        if (data === null) {
+            return null;
+        }
         if (typeof data === "string" || typeof data === "number" || typeof data === "boolean") {
             return data;
         }
@@ -41,11 +48,18 @@ export class DefaultSerializer implements Serializer<any> {
         }
 
         //Deserialize
-        if (data instanceof Array) {
-            for (let i = 0; i < data.length; i++) {
-                data[i] = reviver(data[i]);
+        if (data.type === 'Map') {
+            let dataRet = new Map();
+            for (const [key, value] of (data.value as [any,any][])) {
+                dataRet.set(reviver(key), reviver(value));
             }
-            return data;
+            return dataRet;
+        } else if (data instanceof Array) {
+            let dataRet = [];
+            for (let i = 0; i < data.length; i++) {
+                dataRet[i] = reviver(data[i]);
+            }
+            return dataRet;
         } else if (data instanceof Object) {
             let ret = {};
             for (const dataKey in data) {
@@ -62,8 +76,12 @@ export class DefaultSerializer implements Serializer<any> {
         ///////////////////////////
         //Basic Expression check
         ///////////////////////////
-        if (data === undefined) return undefined;
-        if (data === null) return null;
+        if (data === undefined) {
+            return undefined;
+        }
+        if (data === null) {
+            return null;
+        }
         if (typeof data === "string" || typeof data === "number" || typeof data === "boolean") {
             return data;
         }
@@ -85,6 +103,15 @@ export class DefaultSerializer implements Serializer<any> {
                 data[i] = replacer(data[i]);
             }
             return data;
+        } else if (data instanceof Map) {
+            let dataRet = new Map();
+            for (const [key, value] of (data as Map<any, any>)) {
+                dataRet.set(replacer(key), replacer(value));
+            }
+            return {
+                type: 'Map',
+                value: Array.from(dataRet.entries()),
+            };
         } else if (data instanceof Object) {
             let ret = {};
             for (const dataKey in data) {

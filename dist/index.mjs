@@ -4434,10 +4434,12 @@ var DefaultSerializer = class {
     BigUint64Array
   ];
   deserialize(data, reviver) {
-    if (data === void 0)
+    if (data === void 0) {
       return void 0;
-    if (data === null)
+    }
+    if (data === null) {
       return null;
+    }
     if (typeof data === "string" || typeof data === "number" || typeof data === "boolean") {
       return data;
     }
@@ -4449,11 +4451,18 @@ var DefaultSerializer = class {
     if (data["serializeID"]) {
       throw new Error();
     }
-    if (data instanceof Array) {
-      for (let i = 0; i < data.length; i++) {
-        data[i] = reviver(data[i]);
+    if (data.type === "Map") {
+      let dataRet = /* @__PURE__ */ new Map();
+      for (const [key, value] of data.value) {
+        dataRet.set(reviver(key), reviver(value));
       }
-      return data;
+      return dataRet;
+    } else if (data instanceof Array) {
+      let dataRet = [];
+      for (let i = 0; i < data.length; i++) {
+        dataRet[i] = reviver(data[i]);
+      }
+      return dataRet;
     } else if (data instanceof Object) {
       let ret = {};
       for (const dataKey in data) {
@@ -4465,10 +4474,12 @@ var DefaultSerializer = class {
     }
   }
   serialize(data, replacer) {
-    if (data === void 0)
+    if (data === void 0) {
       return void 0;
-    if (data === null)
+    }
+    if (data === null) {
       return null;
+    }
     if (typeof data === "string" || typeof data === "number" || typeof data === "boolean") {
       return data;
     }
@@ -4485,6 +4496,15 @@ var DefaultSerializer = class {
         data[i] = replacer(data[i]);
       }
       return data;
+    } else if (data instanceof Map) {
+      let dataRet = /* @__PURE__ */ new Map();
+      for (const [key, value] of data) {
+        dataRet.set(replacer(key), replacer(value));
+      }
+      return {
+        type: "Map",
+        value: Array.from(dataRet.entries())
+      };
     } else if (data instanceof Object) {
       let ret = {};
       for (const dataKey in data) {
