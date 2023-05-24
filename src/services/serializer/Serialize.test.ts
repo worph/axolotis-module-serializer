@@ -83,8 +83,8 @@ test('serialize/deserialiser', () => {
 test('serialize/deserialiser default', () => {
     const serializer = new SerializerEngine();
 
-    //serializer.registerDataType(new ASerializer());
-    //serializer.registerDataType(new BSerializer());
+    serializer.registerDataType(new ASerializer());
+    serializer.registerDataType(new BSerializer());
 
     const b1 = new B();
     b1.mkData();

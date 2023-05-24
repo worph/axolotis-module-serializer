@@ -14,7 +14,7 @@ type Serializable = {
 } & SerializableType;
 type SerialisationData = {
     [id: string]: any;
-} & SerialisationDataType;
+};
 interface Serializer<T extends SerializableType> {
     getSerializeID(): string;
     deserialize(data: SerialisationData, reviver?: (obj: GenericSerialisationData) => GenericSerializable): T;
@@ -22,7 +22,24 @@ interface Serializer<T extends SerializableType> {
 }
 
 declare class DefaultSerializer implements Serializer<any> {
-    specialListException: (ArrayBufferConstructor | Int8ArrayConstructor | Uint8ArrayConstructor | Uint8ClampedArrayConstructor | Int16ArrayConstructor | Uint16ArrayConstructor | Int32ArrayConstructor | Uint32ArrayConstructor | Float32ArrayConstructor | Float64ArrayConstructor | BigInt64ArrayConstructor | BigUint64ArrayConstructor)[];
+    strictMode: boolean;
+    setStrictMode(strictMode: boolean): void;
+    arrayTypes: {
+        ArrayBuffer: ArrayBufferConstructor;
+        Int8Array: Int8ArrayConstructor;
+        Uint8Array: Uint8ArrayConstructor;
+        Uint8ClampedArray: Uint8ClampedArrayConstructor;
+        Int16Array: Int16ArrayConstructor;
+        Uint16Array: Uint16ArrayConstructor;
+        Int32Array: Int32ArrayConstructor;
+        Uint32Array: Uint32ArrayConstructor;
+        Float32Array: Float32ArrayConstructor;
+        Float64Array: Float64ArrayConstructor;
+        BigInt64Array: BigInt64ArrayConstructor;
+        BigUint64Array: BigUint64ArrayConstructor;
+    };
+    private encodeTypedArray;
+    private decodeTypedArray;
     deserialize(data: any, reviver?: (obj: GenericSerialisationData) => GenericSerializable): any;
     serialize(data: any, replacer?: (obj: GenericSerializable) => GenericSerialisationData): any;
     getSerializeID(): string;
@@ -33,6 +50,7 @@ declare class SerializerEngine {
         [id: string]: Serializer<any>;
     };
     defaultSeri: DefaultSerializer;
+    getDefaultSerializer(): DefaultSerializer;
     registerDataType(objSerializer: Serializer<any>): void;
     reviver: <T extends SerializableType>(subobj: GenericSerialisationData) => T;
     replacer: (subobj: GenericSerializable) => GenericSerialisationData;
@@ -40,6 +58,7 @@ declare class SerializerEngine {
     deserializeFromString<T extends SerializableType>(obj: string): T;
     serialise(obj: GenericSerializable): GenericSerialisationData;
     deserialize<T extends SerializableType>(data: GenericSerialisationData): T;
+    isSerializable(obj: any): boolean;
 }
 
 declare const SerializerEngineName: unique symbol;

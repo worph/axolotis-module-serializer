@@ -9,6 +9,10 @@ export class SerializerEngine {
     seriList: { [id: string]: Serializer<any> } = {};
     defaultSeri = new DefaultSerializer();
 
+    getDefaultSerializer(): DefaultSerializer {
+        return this.defaultSeri;
+    }
+
     registerDataType(objSerializer: Serializer<any>) {
         this.seriList[objSerializer.getSerializeID()] = objSerializer;
     }
@@ -30,11 +34,16 @@ export class SerializerEngine {
     }
 
     serialise(obj: GenericSerializable): GenericSerialisationData {
-        let seri:Serializer<any> = this.defaultSeri;
         if (obj && ((obj as any).serializeID && this.seriList[(obj as any).serializeID])) {
-            seri = this.seriList[(obj as any).serializeID];
+            let seri:Serializer<any> = this.seriList[(obj as any).serializeID];
+            if (!seri) throw new Error("Serializer not found for " + (obj as any).serializeID);
+            let serializedData = seri.serialize(obj, this.replacer);
+            serializedData.serializeID = (obj as any).serializeID;//ensure that the serializeID is always transmitted
+            return serializedData;
+        }else {
+            let serializedData = this.defaultSeri.serialize(obj, this.replacer);
+            return serializedData;
         }
-        return seri.serialize(obj, this.replacer);
     }
 
     deserialize<T extends SerializableType>(data: GenericSerialisationData): T {
@@ -45,4 +54,15 @@ export class SerializerEngine {
         return seri.deserialize(data, this.reviver);
     }
 
+    /**
+     * Checks if the object is serializable. A serializable object has a serializeID and a serializer registered for it.
+     * @param obj The object to check
+     */
+    isSerializable(obj: any) {
+        if (obj && ((obj as any).serializeID && this.seriList[(obj as any).serializeID])) {
+            let seri:Serializer<any> = this.seriList[(obj as any).serializeID];
+            return !!seri;
+        }
+        return false;
+    }
 }

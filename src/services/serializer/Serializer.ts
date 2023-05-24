@@ -9,7 +9,7 @@ export interface SerializableType {
 export type GenericSerializable = Serializable | string;
 export type GenericSerialisationData = SerialisationData  | string;
 export type Serializable = { [id:string]:any } & SerializableType;
-export type SerialisationData = { [id:string]:any } & SerialisationDataType;
+export type SerialisationData = { [id:string]:any };
 
 export interface Serializer<T extends SerializableType> {
     getSerializeID(): string;
