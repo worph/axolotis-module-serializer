@@ -13,7 +13,6 @@ class ASerializer implements Serializer<A>{
 
     serialize(data: A, replacer: (obj: GenericSerializable) => GenericSerialisationData): any {
         return {
-            serializeID:data.serializeID,
             data:replacer(data.data)
         };
     }
@@ -24,10 +23,13 @@ class ASerializer implements Serializer<A>{
 }
 
 class A implements SerializableType{
-    serializeID: string = A.name;
     data:string = "a data";
     mkData(){
         this.data = "new A data"
+    }
+
+    getSerialisationID(): string {
+        return A.name;
     }
 }
 
@@ -41,7 +43,6 @@ class BSerializer implements Serializer<B>{
 
     serialize(data: B, replacer: (obj: GenericSerializable) => GenericSerialisationData): any {
         return {
-            serializeID:data.serializeID,
             data : replacer(data.data),
             a: replacer(data.a),
         };
@@ -54,13 +55,16 @@ class BSerializer implements Serializer<B>{
 }
 
 class B implements SerializableType{
-    serializeID: string = B.name;
     a:A = new A();
     data:string = "b data";
 
     mkData(){
         this.data = "b new data";
         this.a.mkData();
+    }
+
+    getSerialisationID(): string {
+        return B.name;
     }
 }
 

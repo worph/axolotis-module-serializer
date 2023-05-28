@@ -1,21 +1,18 @@
 import { AxModule } from 'axolotis-module-definition';
 import { ContainerModule } from 'inversify';
 
-interface SerialisationDataType {
-    serializeID: string;
+interface Serializable {
+    getSerialisationID(): string;
 }
-interface SerializableType {
-    serializeID: string;
-}
-type GenericSerializable = Serializable | string;
-type GenericSerialisationData = SerialisationData | string;
-type Serializable = {
+type SerializableType = {
     [id: string]: any;
-} & SerializableType;
+} | Serializable;
+type GenericSerializable = SerializableType | string;
 type SerialisationData = {
     [id: string]: any;
 };
-interface Serializer<T extends SerializableType> {
+type GenericSerialisationData = SerialisationData | string;
+interface Serializer<T extends Serializable> {
     getSerializeID(): string;
     deserialize(data: SerialisationData, reviver?: (obj: GenericSerialisationData) => GenericSerializable): T;
     serialize(data: T, replacer?: (obj: GenericSerializable) => GenericSerialisationData): SerialisationData;
@@ -67,4 +64,4 @@ declare class AxSerializerModule implements AxModule {
     getModule(): ContainerModule;
 }
 
-export { AxSerializerModule, GenericSerialisationData, GenericSerializable, SerialisationData, SerialisationDataType, Serializable, SerializableType, Serializer, SerializerEngine, SerializerEngineName };
+export { AxSerializerModule, GenericSerialisationData, GenericSerializable, SerialisationData, Serializable, SerializableType, Serializer, SerializerEngine, SerializerEngineName };

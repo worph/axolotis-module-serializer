@@ -1,17 +1,14 @@
-export interface SerialisationDataType {
-    serializeID: string;
+
+export interface Serializable {
+    getSerialisationID(): string;
 }
 
-export interface SerializableType {
-    serializeID: string;
-}
-
-export type GenericSerializable = Serializable | string;
-export type GenericSerialisationData = SerialisationData  | string;
-export type Serializable = { [id:string]:any } & SerializableType;
+export type SerializableType = { [id:string]:any } | Serializable;
+export type GenericSerializable = SerializableType | string;
 export type SerialisationData = { [id:string]:any };
+export type GenericSerialisationData = SerialisationData  | string;
 
-export interface Serializer<T extends SerializableType> {
+export interface Serializer<T extends Serializable> {
     getSerializeID(): string;
 
     /**

@@ -115,9 +115,11 @@ export class DefaultSerializer implements Serializer<any> {
             return data;
         }
 
-
-        if (data["serializeID"]) {
-            throw new Error();
+        if (data["getSerialisationID"]) {
+            throw new Error("Cannot use default to deserialize a serializable object :"+data.getSerialisationID());
+        }
+        if ( data["serializeID"]) {
+            throw new Error("Cannot use default to deserialize a serializable object :"+data["serializeID"]);
         }
 
         //Deserialize
@@ -169,8 +171,11 @@ export class DefaultSerializer implements Serializer<any> {
                 return this.encodeTypedArray(data);
             }
         }
-        if (data["serializeID"]) {
-            throw new Error();
+        if (data["getSerialisationID"]) {
+            throw new Error("Cannot use default to deserialize a serializable object :"+data.getSerialisationID());
+        }
+        if ( data["serializeID"]) {
+            throw new Error("Cannot use default to deserialize a serializable object :"+data["serializeID"]);
         }
 
         ///////////
