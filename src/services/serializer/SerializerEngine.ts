@@ -1,7 +1,9 @@
 import {DefaultSerializer} from "./DefaultSerializer";
 import {
     GenericSerialisationData,
-    GenericSerializable, SerialisationData, Serializable, SerializableType,
+    GenericSerializable,
+    SerialisationData,
+    SerializableType,
     Serializer,
 } from "./Serializer";
 
@@ -59,7 +61,7 @@ export class SerializerEngine {
      * @param obj The object to check
      */
     isSerializable(obj: any) {
-        if (obj && ((obj as any).getSerialisationID && this.seriList[(obj as any).getSerialisationID])) {
+        if (obj && ((obj as any).getSerialisationID && this.seriList[(obj as any).getSerialisationID()])) {
             let seri:Serializer<any> = this.seriList[(obj as SerializableType).getSerialisationID()];
             return !!seri;
         }
