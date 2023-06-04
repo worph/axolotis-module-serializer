@@ -116,10 +116,12 @@ export class DefaultSerializer implements Serializer<any> {
         }
 
         if (data["getSerialisationID"]) {
-            throw new Error("Cannot use default to deserialize a serializable object :"+data.getSerialisationID());
+            console.warn("Cannot use default to deserialize a serializable object :"+data.getSerialisationID());
+            return undefined;
         }
         if ( data["serializeID"]) {
-            throw new Error("Cannot use default to deserialize a serializable object :"+data["serializeID"]);
+            console.warn("Cannot use default to deserialize a serializable object :"+data["serializeID"]);
+            return undefined;
         }
 
         //Deserialize
@@ -127,6 +129,12 @@ export class DefaultSerializer implements Serializer<any> {
             let dataRet = new Map();
             for (const [key, value] of (data.value as [any,any][])) {
                 dataRet.set(reviver(key), reviver(value));
+            }
+            return dataRet;
+        } else if (data.type === "Set") {
+            let dataRet = new Set();
+            for (const value of data.value as any[]) {
+                dataRet.add(reviver(value));
             }
             return dataRet;
         } else if (data instanceof Array) {
@@ -194,6 +202,15 @@ export class DefaultSerializer implements Serializer<any> {
             return {
                 type: 'Map',
                 value: Array.from(dataRet.entries()),
+            };
+        } else if (data instanceof Set) {
+            let dataRet = new Set();
+            for (const value of data) {
+                dataRet.add(replacer(value));
+            }
+            return {
+                type: 'Set',
+                value: Array.from(dataRet),
             };
         } else if (data instanceof Object) {
             if(this.strictMode){
