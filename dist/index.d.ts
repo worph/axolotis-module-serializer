@@ -56,6 +56,7 @@ declare class SerializerEngine {
     serialise(obj: GenericSerializable): GenericSerialisationData;
     deserialize<T extends SerializableType>(data: GenericSerialisationData): T;
     isSerializable(obj: any): boolean;
+    clone<T>(data: T): T;
 }
 
 declare const SerializerEngineName: unique symbol;

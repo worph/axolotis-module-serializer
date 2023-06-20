@@ -67,4 +67,8 @@ export class SerializerEngine {
         }
         return false;
     }
+
+    clone<T>(data: T):T {
+        return this.deserialize<T>(this.serialise(data));
+    }
 }
