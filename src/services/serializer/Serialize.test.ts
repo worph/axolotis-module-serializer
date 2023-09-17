@@ -76,7 +76,7 @@ test('serialize/deserialiser', () => {
 
     const b1 = new B();
     b1.mkData();
-    const serialisationData = serializer.serialise(b1);
+    const serialisationData = serializer.serialize(b1);
 
     const b2 = serializer.deserialize<B>(serialisationData);
 
@@ -92,7 +92,7 @@ test('serialize/deserialiser default', () => {
 
     const b1 = new B();
     b1.mkData();
-    const serialisationData = serializer.serialise(b1);
+    const serialisationData = serializer.serialize(b1);
 
     const b2 = serializer.deserialize<B>(serialisationData);
 

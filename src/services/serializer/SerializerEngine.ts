@@ -24,18 +24,18 @@ export class SerializerEngine {
     }
 
     replacer = (subobj: GenericSerializable) => {
-        return this.serialise(subobj);
+        return this.serialize(subobj);
     }
 
     serializeToString(obj: GenericSerializable): string {
-        return JSON.stringify(this.serialise(obj));
+        return JSON.stringify(this.serialize(obj));
     }
 
     deserializeFromString<T extends SerializableType>(obj: string): T {
         return this.deserialize<T>(JSON.parse(obj));
     }
 
-    serialise(obj: GenericSerializable): GenericSerialisationData {
+    serialize(obj: GenericSerializable): GenericSerialisationData {
         if (obj && ((obj as any).getSerialisationID && this.seriList[(obj as any).getSerialisationID()])) {
             let seri:Serializer<any> = this.seriList[(obj as SerializableType).getSerialisationID()];
             if (!seri) throw new Error("Serializer not found for " + (obj as any).getSerialisationID);
@@ -69,6 +69,6 @@ export class SerializerEngine {
     }
 
     clone<T>(data: T):T {
-        return this.deserialize<T>(this.serialise(data));
+        return this.deserialize<T>(this.serialize(data));
     }
 }

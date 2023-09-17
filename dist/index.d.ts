@@ -53,7 +53,7 @@ declare class SerializerEngine {
     replacer: (subobj: GenericSerializable) => GenericSerialisationData;
     serializeToString(obj: GenericSerializable): string;
     deserializeFromString<T extends SerializableType>(obj: string): T;
-    serialise(obj: GenericSerializable): GenericSerialisationData;
+    serialize(obj: GenericSerializable): GenericSerialisationData;
     deserialize<T extends SerializableType>(data: GenericSerialisationData): T;
     isSerializable(obj: any): boolean;
     clone<T>(data: T): T;
