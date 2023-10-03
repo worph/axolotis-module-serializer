@@ -22,6 +22,7 @@ declare class DefaultSerializer implements Serializer<any> {
     strictMode: boolean;
     setStrictMode(strictMode: boolean): void;
     arrayTypes: {
+        SharedArrayBuffer: SharedArrayBufferConstructor | ArrayBufferConstructor;
         ArrayBuffer: ArrayBufferConstructor;
         Int8Array: Int8ArrayConstructor;
         Uint8Array: Uint8ArrayConstructor;

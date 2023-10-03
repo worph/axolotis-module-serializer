@@ -20,6 +20,7 @@ export class DefaultSerializer implements Serializer<any> {
     }
 
     arrayTypes = {
+        "SharedArrayBuffer": typeof SharedArrayBuffer !== 'undefined'?SharedArrayBuffer:ArrayBuffer,
         "ArrayBuffer": ArrayBuffer,
         "Int8Array": Int8Array,
         "Uint8Array": Uint8Array,
@@ -36,7 +37,12 @@ export class DefaultSerializer implements Serializer<any> {
 
     private encodeTypedArray(typedArray: ArrayBuffer | Int8Array | Uint8Array | Uint8ClampedArray | Int16Array | Uint16Array | Int32Array | Uint32Array | Float32Array | Float64Array | BigInt64Array | BigUint64Array): string {
         let binary = '';
-        let buffer = typedArray instanceof ArrayBuffer ? typedArray : typedArray.buffer;
+        let buffer;
+        if (typeof SharedArrayBuffer !== 'undefined') {
+            buffer = (typedArray instanceof ArrayBuffer || typedArray instanceof SharedArrayBuffer) ? typedArray : typedArray.buffer;
+        }else {
+            buffer = typedArray instanceof ArrayBuffer ? typedArray : typedArray.buffer;
+        }
         let bytes = new Uint8Array(buffer);
         for (let byte of bytes) {
             binary += String.fromCharCode(byte);
@@ -55,12 +61,17 @@ export class DefaultSerializer implements Serializer<any> {
 
     private decodeTypedArray(base64String: string): any {
         let [type, base64Data] = base64String.split(":");
-        if (type === "ArrayBuffer") {
+        if (type === "ArrayBuffer" || type === "SharedArrayBuffer") {
             const binary = typeof atob !== 'undefined'
                 ? atob(base64Data)
                 : Buffer.from(base64Data, 'base64').toString('binary');
 
-            const buffer = new ArrayBuffer(binary.length);
+            let buffer;
+            if (typeof SharedArrayBuffer !== 'undefined' && type === "SharedArrayBuffer") {
+                buffer = new SharedArrayBuffer(binary.length);
+            }else {
+                buffer = new ArrayBuffer(binary.length);
+            }
             const view = new Uint8Array(buffer);
 
             for (let i = 0; i < binary.length; i++) {
@@ -175,7 +186,7 @@ export class DefaultSerializer implements Serializer<any> {
         }
         //the following object can be parsed natively no need to interfere
         for (const specialListExceptionElement in this.arrayTypes) {
-            if (data instanceof Object && data instanceof this.arrayTypes[specialListExceptionElement]) {
+            if (data instanceof this.arrayTypes[specialListExceptionElement]) {
                 return this.encodeTypedArray(data);
             }
         }

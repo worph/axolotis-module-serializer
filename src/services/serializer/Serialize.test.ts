@@ -1,5 +1,5 @@
 import {
-    GenericSerialisationData, GenericSerializable,
+    GenericSerialisationData, GenericSerializable, Serializable,
     SerializableType, Serializer,
 } from "./Serializer";
 import { SerializerEngine } from "./SerializerEngine";
@@ -22,7 +22,7 @@ class ASerializer implements Serializer<A>{
     }
 }
 
-class A implements SerializableType{
+class A implements Serializable{
     data:string = "a data";
     mkData(){
         this.data = "new A data"
@@ -54,7 +54,7 @@ class BSerializer implements Serializer<B>{
 
 }
 
-class B implements SerializableType{
+class B implements Serializable{
     a:A = new A();
     data:string = "b data";
 
