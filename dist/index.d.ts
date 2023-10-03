@@ -20,7 +20,9 @@ interface Serializer<T extends Serializable> {
 
 declare class DefaultSerializer implements Serializer<any> {
     strictMode: boolean;
+    keepArrayTypes: boolean;
     setStrictMode(strictMode: boolean): void;
+    keepArrayType(keepArrayTypes: boolean): void;
     arrayTypes: {
         SharedArrayBuffer: SharedArrayBufferConstructor | ArrayBufferConstructor;
         ArrayBuffer: ArrayBufferConstructor;
@@ -44,10 +46,11 @@ declare class DefaultSerializer implements Serializer<any> {
 }
 
 declare class SerializerEngine {
+    private defaultSeri;
     seriList: {
         [id: string]: Serializer<any>;
     };
-    defaultSeri: DefaultSerializer;
+    constructor(defaultSeri?: DefaultSerializer);
     getDefaultSerializer(): DefaultSerializer;
     registerDataType(objSerializer: Serializer<any>): void;
     reviver: <T extends SerializableType>(subobj: GenericSerialisationData) => T;

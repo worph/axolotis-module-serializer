@@ -10,6 +10,7 @@ import {
 export class DefaultSerializer implements Serializer<any> {
 
     strictMode: boolean = false;
+    keepArrayTypes: boolean = false;
 
     /**
      * In strict mode Object (Records) are not allowed
@@ -17,6 +18,10 @@ export class DefaultSerializer implements Serializer<any> {
      */
     setStrictMode(strictMode: boolean): void {
         this.strictMode = strictMode;
+    }
+
+    keepArrayType(keepArrayTypes: boolean){
+        this.keepArrayTypes = keepArrayTypes;
     }
 
     arrayTypes = {
@@ -103,7 +108,6 @@ export class DefaultSerializer implements Serializer<any> {
         return new this.arrayTypes[type](bytes.buffer);
     }
 
-
     deserialize(data: any, reviver?: (obj: GenericSerialisationData) => GenericSerializable): any {
         if(!reviver){
             reviver = (obj: GenericSerialisationData) => {
@@ -124,6 +128,14 @@ export class DefaultSerializer implements Serializer<any> {
             return this.decodeTypedArray(data);
         } else if (typeof data === "number" || typeof data === "boolean") {
             return data;
+        }
+
+        if(this.keepArrayTypes){
+            for (const specialListExceptionElement in this.arrayTypes) {
+                if (data instanceof this.arrayTypes[specialListExceptionElement]) {
+                    return data;
+                }
+            }
         }
 
         if (data["getSerialisationID"]) {
@@ -187,7 +199,11 @@ export class DefaultSerializer implements Serializer<any> {
         //the following object can be parsed natively no need to interfere
         for (const specialListExceptionElement in this.arrayTypes) {
             if (data instanceof this.arrayTypes[specialListExceptionElement]) {
-                return this.encodeTypedArray(data);
+                if(this.keepArrayTypes) {
+                    return data;
+                }else {
+                    return this.encodeTypedArray(data);
+                }
             }
         }
         if (data["getSerialisationID"]) {
@@ -224,9 +240,6 @@ export class DefaultSerializer implements Serializer<any> {
                 value: Array.from(dataRet),
             };
         } else if (data instanceof Object) {
-            if(this.strictMode){
-                console.warn("Strict mode is enabled and Object are not allowed")
-            }
             let ret = {};
             for (const dataKey in data) {
                 ret[dataKey] = replacer(data[dataKey]);
@@ -234,12 +247,11 @@ export class DefaultSerializer implements Serializer<any> {
             return ret;
         } else {
             if(this.strictMode){
-                throw new Error("Strict mode is enabled and Object are not allowed");
+                throw new Error("If strict mode is enabled Objects are not allowed");
             }
             return JSON.parse(JSON.stringify(data));//keeps only data
         }
     }
-
 
     getSerializeID(): string {
         return null;//default special case

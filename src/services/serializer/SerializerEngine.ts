@@ -9,7 +9,10 @@ import {
 
 export class SerializerEngine {
     seriList: { [id: string]: Serializer<any> } = {};
-    defaultSeri = new DefaultSerializer();
+
+
+    constructor(private defaultSeri = new DefaultSerializer()) {
+    }
 
     getDefaultSerializer(): DefaultSerializer {
         return this.defaultSeri;
